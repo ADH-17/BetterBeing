@@ -14,10 +14,23 @@
 
     <h1>Welcome!</h1>
 
-    <button>Sign In</button>
-    <button>Sign Up</button>
+    <button id="signInBtn">Sign In</button>
+    <button id="signUpBtn">Sign Up</button>
   </div>
 
   <script src="script.js"></script>
 </body>
+<script>
+    const signInBtn = document.getElementById("signInBtn");
+    const signUpBtn = document.getElementById("signUpBtn");
+
+    signInBtn.addEventListener("click", function() {
+        window.location.href = "signIn.html";
+    });
+
+    signUpBtn.addEventListener("click", function(){
+        window.location.href = ("signUp.html");
+    });
+
+</script>
 </html>

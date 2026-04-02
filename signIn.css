@@ -1,0 +1,66 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Full screen */
+body {
+  height: 100vh;
+  position: relative;
+}
+
+/* Background */
+.background {
+  position: absolute;
+  inset: 0;
+  background: url("flowers.jpg") no-repeat center/cover;
+  z-index: -1;
+}
+
+/* Card container */
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  width: 280px;
+  padding: 20px;
+
+  background: #f4f4f4;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+  /* THIS is what fixes your layout */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Inputs */
+.card textarea {
+  resize: none;
+  height: 40px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* Button */
+.btn {
+  padding: 10px;
+  background-color: #8aa9d6;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  background-color: #6f8fc0;
+}
