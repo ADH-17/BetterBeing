@@ -1,0 +1,70 @@
+/* Reset default browser styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Center everything on screen */
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e6e6e6;
+}
+
+/* Main container */
+.container {
+  width: 300px;
+  padding: 30px 20px;
+  background-color: #f9f9f9;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo */
+.container img {
+  width: 80px;
+  margin-bottom: 10px;
+}
+
+/* App name */
+.container p {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+/* Welcome text */
+.container h1 {
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/* Buttons */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #8aa9d6;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Hover effect */
+button:hover {
+  background-color: #6f8fc0;
+}
+
+/* Optional: last button spacing fix */
+button:last-child {
+  margin-bottom: 0;
+}
