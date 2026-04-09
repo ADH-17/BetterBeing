@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morning Guided Meditation – BetterBeing</title>
+  <link rel="stylesheet" href="meditation.css" />
+  <style>
+    .player-controls-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+    }
+    .volume-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: flex-start;
+    }
+    .controls-center {
+      display: flex;
+      justify-content: center;
+    }
+    .pause-btn {
+      width: 48px;
+      height: 48px;
+      border: 2px solid #555;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: white;
+    }
+    .pause-btn svg {
+      width: 22px;
+      height: 22px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <a href="meditation.html" class="back-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </a>
+        <h1 class="page-title">Morning Guided<br>Meditation</h1>
+      </div>
+      <div class="profile-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="7" r="4"/>
+          <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Player Card -->
+    <div class="player-card">
+
+      <!-- Image placeholder (sunrise / mountain) -->
+      <div class="player-image" style="background: linear-gradient(180deg, #f97316 0%, #fb923c 25%, #fbbf24 55%, #1a1a3e 100%);">
+        <div class="img-placeholder">🌄</div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="progress-bar-wrap">
+        <div class="progress-bar">
+          <div class="progress-fill red" id="progressFill"></div>
+        </div>
+        <div class="progress-times">
+          <span id="currentTime">0:00</span>
+          <span id="remainingTime">12:28</span>
+        </div>
+      </div>
+
+      <!-- Controls: volume left | play/pause center | spacer right -->
+      <div class="player-controls-row">
+        <div class="volume-group">
+          <span class="volume-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M15.54 8.46a5 5 0 010 7.07"/>
+              <path d="M19.07 4.93a10 10 0 010 14.14"/>
+            </svg>
+          </span>
+          <input type="range" class="volume-slider" min="0" max="100" value="60" />
+        </div>
+
+        <div class="controls-center">
+          <div class="pause-btn" id="pauseBtn" onclick="togglePlay()">
+            <svg id="playPauseIcon" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="6" y="4" width="4" height="16"/>
+              <rect x="14" y="4" width="4" height="16"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Empty right column to balance the grid -->
+        <div></div>
+      </div>
+
+      <!-- Description -->
+      <div class="session-desc-block">
+        <p>Start your morning with guided meditation to reduce stress, increase mental clarity, and boost productivity.</p>
+        <p class="duration-label">~ 15 minutes</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <div class="nav-item">
+      <span>📓</span>
+      <p>JOURNAL</p>
+    </div>
+    <div class="nav-item">
+      <span>📈</span>
+      <p>PROGRESS</p>
+    </div>
+    <div class="nav-item">
+      <span>🏠</span>
+      <p>HOME</p>
+    </div>
+    <div class="nav-item">
+      <span>🏋️</span>
+      <p>WORKOUT</p>
+    </div>
+    <a href="meditation.html" class="nav-item active">
+      <span>🧘</span>
+      <p>MEDITATION</p>
+    </a>
+  </nav>
+
+  <script>
+    const TOTAL_SECONDS = 12 * 60 + 28;
+    let elapsed = 0;
+    let playing = true;
+    setInterval(tick, 1000);
+
+    function tick() {
+      if (!playing) return;
+      elapsed++;
+      if (elapsed > TOTAL_SECONDS) elapsed = TOTAL_SECONDS;
+      updateUI();
+    }
+
+    function updateUI() {
+      // Elapsed (left)
+      const eMins = Math.floor(elapsed / 60);
+      const eSecs = elapsed % 60;
+      document.getElementById('currentTime').textContent =
+        eMins + ':' + String(eSecs).padStart(2, '0');
+
+      // Remaining (right)
+      const rem = TOTAL_SECONDS - elapsed;
+      const rMins = Math.floor(rem / 60);
+      const rSecs = rem % 60;
+      document.getElementById('remainingTime').textContent =
+        rMins + ':' + String(rSecs).padStart(2, '0');
+
+      // Progress fill
+      document.getElementById('progressFill').style.width =
+        (elapsed / TOTAL_SECONDS * 100) + '%';
+    }
+
+    function togglePlay() {
+      playing = !playing;
+      const icon = document.getElementById('playPauseIcon');
+      icon.innerHTML = playing
+        ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
+        : '<polygon points="5,3 19,12 5,21"/>';
+    }
+  </script>
+
+</body>
+</html>
