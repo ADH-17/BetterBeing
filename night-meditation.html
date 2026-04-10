@@ -18,38 +18,21 @@
       gap: 6px;
       justify-content: flex-start;
     }
-    .controls-center {
-      display: flex;
-      justify-content: center;
-    }
+    .controls-center { display: flex; justify-content: center; }
     .pause-btn {
-      width: 48px;
-      height: 48px;
-      border: 2px solid #555;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      background: white;
+      width: 48px; height: 48px;
+      border: 2px solid #555; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; background: white;
     }
-    .pause-btn svg {
-      width: 22px;
-      height: 22px;
-    }
-    .progress-bar {
-      cursor: pointer;
-    }
+    .pause-btn svg { width: 22px; height: 22px; }
   </style>
 </head>
 <body>
 
-  <!-- Hidden audio element -->
-  <audio id="audioPlayer" src="meditation_sound_files/Body-Scan-for-Sleep.mp3" preload="metadata"></audio>
+  <audio id="audioPlayer" src="meditation_sound_files/Body-Sound-Meditation.mp3" preload="metadata"></audio>
 
   <div class="container">
-
-    <!-- Header -->
     <div class="header">
       <div class="header-left">
         <a href="meditation.html" class="back-btn">
@@ -67,18 +50,15 @@
       </div>
     </div>
 
-    <!-- Player Card -->
     <div class="player-card">
-
-      <!-- Image -->
       <div class="player-image" style="background: linear-gradient(180deg, #0f1b3d 0%, #1a2f6e 40%, #3a5fa8 75%, #6b8ec7 100%);">
         <div class="img-placeholder">🌙</div>
       </div>
 
-      <!-- Progress bar -->
       <div class="progress-bar-wrap">
-        <div class="progress-bar" id="progressBar">
-          <div class="progress-fill blue" id="progressFill"></div>
+        <div class="progress-bar" style="position:relative; overflow:hidden;">
+          <div class="progress-fill blue" id="progressFill" style="position:absolute;top:0;left:0;height:100%;width:0%;"></div>
+          <div id="progressOverlay" style="position:absolute;top:0;left:0;width:100%;height:100%;cursor:pointer;z-index:10;"></div>
         </div>
         <div class="progress-times">
           <span id="currentTime">0:00</span>
@@ -86,7 +66,6 @@
         </div>
       </div>
 
-      <!-- Controls -->
       <div class="player-controls-row">
         <div class="volume-group">
           <span class="volume-icon">
@@ -98,55 +77,35 @@
           </span>
           <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="80" />
         </div>
-
         <div class="controls-center">
-          <div class="pause-btn" id="pauseBtn" onclick="togglePlay()">
+          <div class="pause-btn" onclick="togglePlay()">
             <svg id="playPauseIcon" viewBox="0 0 24 24" fill="currentColor">
               <polygon points="5,3 19,12 5,21"/>
             </svg>
           </div>
         </div>
-
         <div></div>
       </div>
 
-      <!-- Description -->
       <div class="session-desc-block">
         <p>End your day with guided meditation to improve sleep quality, reduce stress, and provide physical relaxation.</p>
-        <p class="duration-label">~ 13 minutes</p>
+        <p class="duration-label">~ 3 minutes</p>
       </div>
-
     </div>
   </div>
 
-  <!-- Bottom Nav -->
   <nav class="bottom-nav">
-    <div class="nav-item">
-      <span>📓</span>
-      <p>JOURNAL</p>
-    </div>
-    <div class="nav-item">
-      <span>📈</span>
-      <p>PROGRESS</p>
-    </div>
-    <div class="nav-item">
-      <span>🏠</span>
-      <p>HOME</p>
-    </div>
-    <div class="nav-item">
-      <span>🏋️</span>
-      <p>WORKOUT</p>
-    </div>
-    <a href="meditation.html" class="nav-item active">
-      <span>🧘</span>
-      <p>MEDITATION</p>
-    </a>
+    <div class="nav-item"><span>📓</span><p>JOURNAL</p></div>
+    <div class="nav-item"><span>📈</span><p>PROGRESS</p></div>
+    <div class="nav-item"><span>🏠</span><p>HOME</p></div>
+    <div class="nav-item"><span>🏋️</span><p>WORKOUT</p></div>
+    <a href="meditation.html" class="nav-item active"><span>🧘</span><p>MEDITATION</p></a>
   </nav>
 
   <script>
     const audio = document.getElementById('audioPlayer');
     const progressFill = document.getElementById('progressFill');
-    const progressBar = document.getElementById('progressBar');
+    const progressOverlay = document.getElementById('progressOverlay');
     const currentTimeEl = document.getElementById('currentTime');
     const remainingTimeEl = document.getElementById('remainingTime');
     const playPauseIcon = document.getElementById('playPauseIcon');
@@ -161,30 +120,21 @@
     }
 
     function showPauseIcon() {
-      playPauseIcon.innerHTML =
-        '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+      playPauseIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
     }
-
     function showPlayIcon() {
       playPauseIcon.innerHTML = '<polygon points="5,3 19,12 5,21"/>';
     }
-
     function togglePlay() {
-      if (audio.paused) {
-        audio.play();
-        showPauseIcon();
-      } else {
-        audio.pause();
-        showPlayIcon();
-      }
+      if (audio.paused) { audio.play(); showPauseIcon(); }
+      else { audio.pause(); showPlayIcon(); }
     }
 
     audio.addEventListener('timeupdate', () => {
       const duration = audio.duration || 0;
       const current = audio.currentTime;
-      const remaining = duration - current;
       currentTimeEl.textContent = formatTime(current);
-      remainingTimeEl.textContent = duration ? formatTime(remaining) : '--:--';
+      remainingTimeEl.textContent = duration ? formatTime(duration - current) : '--:--';
       progressFill.style.width = duration ? (current / duration * 100) + '%' : '0%';
     });
 
@@ -192,16 +142,11 @@
       remainingTimeEl.textContent = formatTime(audio.duration);
     });
 
-    audio.addEventListener('ended', () => {
-      showPlayIcon();
-    });
+    audio.addEventListener('ended', showPlayIcon);
 
-    progressBar.addEventListener('click', (e) => {
-      const rect = progressBar.getBoundingClientRect();
-      const pct = (e.clientX - rect.left) / rect.width;
-      if (audio.duration) {
-        audio.currentTime = pct * audio.duration;
-      }
+    progressOverlay.addEventListener('click', (e) => {
+      const pct = Math.max(0, Math.min(1, e.offsetX / progressOverlay.offsetWidth));
+      if (audio.duration) audio.currentTime = pct * audio.duration;
     });
 
     volumeSlider.addEventListener('input', () => {
