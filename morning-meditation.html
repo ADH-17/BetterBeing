@@ -37,9 +37,15 @@
       width: 22px;
       height: 22px;
     }
+    .progress-bar {
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Hidden audio element -->
+  <audio id="audioPlayer" src="meditation_sound_files/02_Breath_Sound_Body_Meditation.mp3" preload="metadata"></audio>
 
   <div class="container">
 
@@ -64,23 +70,23 @@
     <!-- Player Card -->
     <div class="player-card">
 
-      <!-- Image placeholder (sunrise / mountain) -->
+      <!-- Image -->
       <div class="player-image" style="background: linear-gradient(180deg, #f97316 0%, #fb923c 25%, #fbbf24 55%, #1a1a3e 100%);">
         <div class="img-placeholder">🌄</div>
       </div>
 
       <!-- Progress bar -->
       <div class="progress-bar-wrap">
-        <div class="progress-bar">
+        <div class="progress-bar" id="progressBar">
           <div class="progress-fill red" id="progressFill"></div>
         </div>
         <div class="progress-times">
           <span id="currentTime">0:00</span>
-          <span id="remainingTime">12:28</span>
+          <span id="remainingTime">--:--</span>
         </div>
       </div>
 
-      <!-- Controls: volume left | play/pause center | spacer right -->
+      <!-- Controls -->
       <div class="player-controls-row">
         <div class="volume-group">
           <span class="volume-icon">
@@ -90,26 +96,25 @@
               <path d="M19.07 4.93a10 10 0 010 14.14"/>
             </svg>
           </span>
-          <input type="range" class="volume-slider" min="0" max="100" value="60" />
+          <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="80" />
         </div>
 
         <div class="controls-center">
           <div class="pause-btn" id="pauseBtn" onclick="togglePlay()">
             <svg id="playPauseIcon" viewBox="0 0 24 24" fill="currentColor">
-              <rect x="6" y="4" width="4" height="16"/>
-              <rect x="14" y="4" width="4" height="16"/>
+              <!-- Play triangle (starts paused until user taps) -->
+              <polygon points="5,3 19,12 5,21"/>
             </svg>
           </div>
         </div>
 
-        <!-- Empty right column to balance the grid -->
         <div></div>
       </div>
 
       <!-- Description -->
       <div class="session-desc-block">
         <p>Start your morning with guided meditation to reduce stress, increase mental clarity, and boost productivity.</p>
-        <p class="duration-label">~ 15 minutes</p>
+        <p class="duration-label">~ 12 minutes</p>
       </div>
 
     </div>
@@ -140,44 +145,76 @@
   </nav>
 
   <script>
-    const TOTAL_SECONDS = 12 * 60 + 28;
-    let elapsed = 0;
-    let playing = true;
-    setInterval(tick, 1000);
+    const audio = document.getElementById('audioPlayer');
+    const progressFill = document.getElementById('progressFill');
+    const progressBar = document.getElementById('progressBar');
+    const currentTimeEl = document.getElementById('currentTime');
+    const remainingTimeEl = document.getElementById('remainingTime');
+    const playPauseIcon = document.getElementById('playPauseIcon');
+    const volumeSlider = document.getElementById('volumeSlider');
 
-    function tick() {
-      if (!playing) return;
-      elapsed++;
-      if (elapsed > TOTAL_SECONDS) elapsed = TOTAL_SECONDS;
-      updateUI();
+    // Set initial volume
+    audio.volume = volumeSlider.value / 100;
+
+    function formatTime(secs) {
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return m + ':' + String(s).padStart(2, '0');
     }
 
-    function updateUI() {
-      // Elapsed (left)
-      const eMins = Math.floor(elapsed / 60);
-      const eSecs = elapsed % 60;
-      document.getElementById('currentTime').textContent =
-        eMins + ':' + String(eSecs).padStart(2, '0');
+    function showPauseIcon() {
+      playPauseIcon.innerHTML =
+        '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+    }
 
-      // Remaining (right)
-      const rem = TOTAL_SECONDS - elapsed;
-      const rMins = Math.floor(rem / 60);
-      const rSecs = rem % 60;
-      document.getElementById('remainingTime').textContent =
-        rMins + ':' + String(rSecs).padStart(2, '0');
-
-      // Progress fill
-      document.getElementById('progressFill').style.width =
-        (elapsed / TOTAL_SECONDS * 100) + '%';
+    function showPlayIcon() {
+      playPauseIcon.innerHTML = '<polygon points="5,3 19,12 5,21"/>';
     }
 
     function togglePlay() {
-      playing = !playing;
-      const icon = document.getElementById('playPauseIcon');
-      icon.innerHTML = playing
-        ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
-        : '<polygon points="5,3 19,12 5,21"/>';
+      if (audio.paused) {
+        audio.play();
+        showPauseIcon();
+      } else {
+        audio.pause();
+        showPlayIcon();
+      }
     }
+
+    // Sync progress bar and times with actual audio position
+    audio.addEventListener('timeupdate', () => {
+      const duration = audio.duration || 0;
+      const current = audio.currentTime;
+      const remaining = duration - current;
+
+      currentTimeEl.textContent = formatTime(current);
+      remainingTimeEl.textContent = duration ? formatTime(remaining) : '--:--';
+      progressFill.style.width = duration ? (current / duration * 100) + '%' : '0%';
+    });
+
+    // Once metadata loads, show real total duration as remaining
+    audio.addEventListener('loadedmetadata', () => {
+      remainingTimeEl.textContent = formatTime(audio.duration);
+    });
+
+    // Reset to play icon when track ends
+    audio.addEventListener('ended', () => {
+      showPlayIcon();
+    });
+
+    // Click on progress bar to seek
+    progressBar.addEventListener('click', (e) => {
+      const rect = progressBar.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      if (audio.duration) {
+        audio.currentTime = pct * audio.duration;
+      }
+    });
+
+    // Volume slider
+    volumeSlider.addEventListener('input', () => {
+      audio.volume = volumeSlider.value / 100;
+    });
   </script>
 
 </body>
