@@ -44,8 +44,17 @@ body {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  border: 2px solid #555;
-  object-fit: cover;
+  background: rgba(255,255,255,0.6);
+  border: 1.5px solid #d0cce0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-icon svg {
+  width: 24px;
+  height: 24px;
+  color: #6b6490;
 }
 
 /* Banner */
