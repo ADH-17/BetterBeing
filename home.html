@@ -14,7 +14,7 @@
     <div class="header">
       <div>
         <p class="greeting">Good Morning,</p>
-        <h1>Alex 👋</h1>
+        <h1 id="usernameDisplay">Alex 👋</h1>
       </div>
       <img src="profile.png" alt="Profile" class="profile-icon" />
     </div>
@@ -138,5 +138,11 @@
     </div>
   </nav>
 
+  <script>
+    const username = localStorage.getItem('username');
+    if (username) {
+      document.getElementById('usernameDisplay').textContent = username + ' 👋';
+    }
+  </script>
 </body>
 </html>
