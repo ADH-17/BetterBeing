@@ -228,3 +228,9 @@ body {
   color: #2d4f6e;
   font-weight: bold;
 }
+
+.nav-item svg {
+  width: 1.3rem;
+  height: 1.3rem;
+  margin-bottom: 2px;
+}

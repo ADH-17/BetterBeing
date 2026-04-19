@@ -5,6 +5,151 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BetterBeing</title>
   <link rel="stylesheet" href="home.css" />
+  <style>
+    /* Modal overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 200;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: #f0f0f0;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 18px 18px 0 0;
+      padding: 1.25rem;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-title {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #1a1a1a;
+      margin-bottom: 1rem;
+    }
+
+    .modal-section-label {
+      font-size: 0.78rem;
+      font-weight: bold;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 0.85rem 0 0.5rem;
+    }
+
+    .pin-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #e4e4e4;
+      border-radius: 8px;
+      padding: 0.7rem 0.9rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+
+    .pin-option-left {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-size: 0.9rem;
+      color: #1a1a1a;
+    }
+
+    .pin-option-left span { font-size: 1.3rem; }
+
+    .pin-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #aaa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .pin-check.checked {
+      background: #2d4f6e;
+      border-color: #2d4f6e;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .btn-modal-cancel {
+      flex: 1;
+      padding: 0.7rem;
+      background: #ddd;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .btn-modal-save {
+      flex: 1;
+      padding: 0.7rem;
+      background: #2d4f6e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* Goals list */
+    .goal-item {
+      background: #e4e4e4;
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+    }
+
+    .goal-left { display: flex; align-items: center; gap: 0.75rem; }
+    .goal-icon { font-size: 1.3rem; }
+    .goal-title { font-size: 0.9rem; font-weight: bold; color: #1a1a1a; }
+    .goal-sub { font-size: 0.78rem; color: #888; }
+
+    .goal-status {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+    .goal-status.active { background: #d4edda; color: #2d6a4f; }
+    .goal-status.done   { background: #cce5ff; color: #1a4f8a; }
+
+    .no-goals {
+      text-align: center;
+      color: #aaa;
+      font-size: 0.85rem;
+      padding: 1rem 0;
+      font-style: italic;
+    }
+
+    .mountain-icon {
+      font-size: 1.3rem;
+      margin-bottom: 2px;
+      line-height: 1;
+    }
+  </style>
 </head>
 <body>
 
@@ -28,60 +173,24 @@
     <div class="banner">
       <p class="banner-label">Today's Goal</p>
       <h2>Stay consistent, keep moving.</h2>
-      <button class="btn-banner">Start Workout</button>
+      <button class="btn-banner" onclick="window.location.href='workout.html'">Start Workout</button>
     </div>
 
     <!-- Pinned Section -->
     <div class="section-header">
       <h3>Pinned</h3>
-      <span class="edit-pins">+ Pin More</span>
+      <span class="edit-pins" onclick="openPinModal()">+ Pin More</span>
     </div>
 
-    <div class="pins-grid">
+    <div class="pins-grid" id="pinsGrid"></div>
 
-      <div class="pin-card">
-        <div class="pin-icon">🏋️</div>
-        <p class="pin-title">Chest/Tri</p>
-        <p class="pin-sub">15 sets</p>
-        <button class="btn-start">Start</button>
-      </div>
-
-      <div class="pin-card">
-        <div class="pin-icon">🦵</div>
-        <p class="pin-title">Leg Day</p>
-        <p class="pin-sub">19 sets</p>
-        <button class="btn-start">Start</button>
-      </div>
-
-      <div class="pin-card">
-        <div class="pin-icon">🎯</div>
-        <p class="pin-title">Step Goal</p>
-        <p class="pin-sub">8,000 steps</p>
-        <button class="btn-start">Track</button>
-      </div>
-
-      <div class="pin-card">
-        <div class="pin-icon">💧</div>
-        <p class="pin-title">Hydration</p>
-        <p class="pin-sub">2L / day</p>
-        <button class="btn-start">Log</button>
-      </div>
-
-      <div class="pin-card">
-        <div class="pin-icon">😴</div>
-        <p class="pin-title">Sleep</p>
-        <p class="pin-sub">8 hrs goal</p>
-        <button class="btn-start">Log</button>
-      </div>
-
-      <div class="pin-card">
-        <div class="pin-icon">🔥</div>
-        <p class="pin-title">Calories</p>
-        <p class="pin-sub">2,200 kcal</p>
-        <button class="btn-start">Log</button>
-      </div>
-
+    <!-- Goals Section -->
+    <div class="section-header">
+      <h3>My Goals</h3>
+      <span class="edit-pins" onclick="window.location.href='goals.html'">See All</span>
     </div>
+
+    <div id="goalsList"></div>
 
     <!-- Recent Activity -->
     <div class="section-header">
@@ -90,7 +199,6 @@
     </div>
 
     <div class="activity-list">
-
       <div class="activity-item">
         <div class="activity-icon">✅</div>
         <div>
@@ -98,7 +206,6 @@
           <p class="activity-sub">Completed · 8 sets · Yesterday</p>
         </div>
       </div>
-
       <div class="activity-item">
         <div class="activity-icon">✅</div>
         <div>
@@ -106,7 +213,6 @@
           <p class="activity-sub">Goal reached · 2 days ago</p>
         </div>
       </div>
-
       <div class="activity-item">
         <div class="activity-icon">✅</div>
         <div>
@@ -114,40 +220,188 @@
           <p class="activity-sub">2L logged · 2 days ago</p>
         </div>
       </div>
-
     </div>
 
+  </div>
+
+  <!-- Pin Modal -->
+  <div class="modal-overlay" id="pinModal">
+    <div class="modal">
+      <p class="modal-title">Choose items to pin</p>
+
+      <p class="modal-section-label">💪 Workouts</p>
+      <div id="workoutOptions"></div>
+
+      <p class="modal-section-label">🎯 Health Tracking</p>
+      <div id="trackingOptions"></div>
+
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closePinModal()">Cancel</button>
+        <button class="btn-modal-save" onclick="savePins()">Save</button>
+      </div>
+    </div>
   </div>
 
   <!-- Bottom Nav -->
   <nav class="bottom-nav">
     <a href="journal.html" class="nav-item">
       <span>📓</span>
-      <p>JOURNAL</p>
+      JOURNAL
     </a>
-    <div class="nav-item">
-      <span>📈</span>
-      <p>PROGRESS</p>
-    </div>
+    <a href="goals.html" class="nav-item">
+      <span>⛰️</span>
+      GOALS
+    </a>
     <a href="home.html" class="nav-item active">
       <span>🏠</span>
-      <p>HOME</p>
+      HOME
     </a>
     <a href="workout.html" class="nav-item">
       <span>🏋️</span>
-      <p>WORKOUT</p>
+      WORKOUT
     </a>
     <a href="meditation.html" class="nav-item">
       <span>🧘</span>
-      <p>MEDITATION</p>
+      MEDITATION
     </a>
   </nav>
 
   <script>
+    // ── Username ──────────────────────────────────────────────
     const username = localStorage.getItem('username');
     if (username) {
       document.getElementById('usernameDisplay').textContent = username + ' 👋';
     }
+
+    // ── All pinnable items ────────────────────────────────────
+    const WORKOUT_OPTIONS = [
+      { id: 'chest',    icon: '🏋️', title: 'Chest/Tri',  sub: '15 sets',     action: 'Start' },
+      { id: 'legs',     icon: '🦵', title: 'Leg Day',    sub: '19 sets',     action: 'Start' },
+      { id: 'abs',      icon: '🔥', title: 'Abs',        sub: '8 sets',      action: 'Start' },
+      { id: 'back',     icon: '💪', title: 'Back/Bi',    sub: '12 sets',     action: 'Start' },
+    ];
+
+    const TRACKING_OPTIONS = [
+      { id: 'steps',    icon: '🎯', title: 'Step Goal',  sub: '8,000 steps', action: 'Track' },
+      { id: 'hydration',icon: '💧', title: 'Hydration',  sub: '2L / day',    action: 'Log'   },
+      { id: 'sleep',    icon: '😴', title: 'Sleep',      sub: '8 hrs goal',  action: 'Log'   },
+      { id: 'calories', icon: '🍎', title: 'Calories',   sub: '2,200 kcal',  action: 'Log'   },
+    ];
+
+    const ALL_OPTIONS = [...WORKOUT_OPTIONS, ...TRACKING_OPTIONS];
+
+    // ── Load/save pinned ──────────────────────────────────────
+    function getPinned() {
+      return JSON.parse(localStorage.getItem('pinnedItems') || '["chest","legs","steps","hydration","sleep","calories"]');
+    }
+
+    function renderPins() {
+      const pinned = getPinned();
+      const grid = document.getElementById('pinsGrid');
+      const items = pinned.map(id => ALL_OPTIONS.find(o => o.id === id)).filter(Boolean);
+
+      if (items.length === 0) {
+        grid.innerHTML = '<p style="color:#aaa;font-size:0.85rem;font-style:italic;grid-column:1/-1">No items pinned. Tap + Pin More to add some.</p>';
+        return;
+      }
+
+      grid.innerHTML = items.map(item => `
+        <div class="pin-card">
+          <div class="pin-icon">${item.icon}</div>
+          <p class="pin-title">${item.title}</p>
+          <p class="pin-sub">${item.sub}</p>
+          <button class="btn-start">${item.action}</button>
+        </div>
+      `).join('');
+    }
+
+    // ── Goals ─────────────────────────────────────────────────
+    function renderGoals() {
+      const goals = JSON.parse(localStorage.getItem('userGoals') || '[]');
+      const el = document.getElementById('goalsList');
+
+      if (goals.length === 0) {
+        el.innerHTML = '<p class="no-goals">No goals yet. Tap "See All" to add your first goal!</p>';
+        return;
+      }
+
+      el.innerHTML = goals.slice(0, 3).map(g => `
+        <div class="goal-item">
+          <div class="goal-left">
+            <span class="goal-icon">${g.icon || '🎯'}</span>
+            <div>
+              <p class="goal-title">${g.title}</p>
+              <p class="goal-sub">${g.sub || ''}</p>
+            </div>
+          </div>
+          <span class="goal-status ${g.done ? 'done' : 'active'}">${g.done ? 'Done' : 'Active'}</span>
+        </div>
+      `).join('');
+    }
+
+    // ── Pin Modal ─────────────────────────────────────────────
+    let tempPinned = [];
+
+    function openPinModal() {
+      tempPinned = [...getPinned()];
+      renderModalOptions('workoutOptions', WORKOUT_OPTIONS);
+      renderModalOptions('trackingOptions', TRACKING_OPTIONS);
+      document.getElementById('pinModal').classList.add('open');
+    }
+
+    function closePinModal() {
+      document.getElementById('pinModal').classList.remove('open');
+    }
+
+    function renderModalOptions(containerId, options) {
+      document.getElementById(containerId).innerHTML = options.map(opt => `
+        <div class="pin-option" onclick="togglePin('${opt.id}', this)">
+          <div class="pin-option-left">
+            <span>${opt.icon}</span>
+            <span>${opt.title} <span style="color:#888;font-size:0.8rem">— ${opt.sub}</span></span>
+          </div>
+          <div class="pin-check ${tempPinned.includes(opt.id) ? 'checked' : ''}" id="check-${opt.id}">✓</div>
+        </div>
+      `).join('');
+    }
+
+    function togglePin(id) {
+      const idx = tempPinned.indexOf(id);
+      if (idx > -1) {
+        tempPinned.splice(idx, 1);
+      } else {
+        tempPinned.push(id);
+      }
+      const check = document.getElementById('check-' + id);
+      check.classList.toggle('checked', tempPinned.includes(id));
+    }
+
+    function savePins() {
+      localStorage.setItem('pinnedItems', JSON.stringify(tempPinned));
+      closePinModal();
+      renderPins();
+    }
+
+    // Close modal if overlay clicked
+    document.getElementById('pinModal').addEventListener('click', function(e) {
+      if (e.target === this) closePinModal();
+    });
+
+    // ── Init ──────────────────────────────────────────────────
+    renderPins();
+    renderGoals();
+
+    // Seed sample goals if none
+    if (!localStorage.getItem('userGoals')) {
+      const sampleGoals = [
+        { icon: '🏃', title: 'Run 5K',         sub: 'Cardio goal',       done: false },
+        { icon: '💧', title: 'Drink 2L water',  sub: 'Daily hydration',   done: true  },
+        { icon: '😴', title: 'Sleep 8 hours',   sub: 'Sleep goal',        done: false },
+      ];
+      localStorage.setItem('userGoals', JSON.stringify(sampleGoals));
+      renderGoals();
+    }
   </script>
+
 </body>
 </html>
