@@ -7,6 +7,11 @@
 body {
   font-family: Arial, sans-serif;
   background: #e8e8e8;
+  background-image:
+    radial-gradient(ellipse at 15% 5%, rgba(180, 220, 255, 0.55) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 15%, rgba(200, 255, 210, 0.45) 0%, transparent 50%),
+    radial-gradient(ellipse at 25% 80%, rgba(255, 210, 140, 0.4) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 85%, rgba(220, 180, 255, 0.4) 0%, transparent 45%);
   display: flex;
   flex-direction: column;
   max-width: 400px;
@@ -16,7 +21,7 @@ body {
 
 .container {
   flex: 1;
-  background: #f0f0f0;
+  background: rgba(255,255,255,0.15);
   padding: 1rem 1.25rem;
   padding-bottom: 80px;
 }
