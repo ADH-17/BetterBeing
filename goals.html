@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Goals – BetterBeing</title>
+  <link rel="stylesheet" href="goals.css" />
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <h1 class="page-title">Goals</h1>
+      <div class="profile-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="7" r="4"/>
+          <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+      </div>
+    </div>
+
+    <p class="section-label">Daily Goals:</p>
+    <div id="dailyGoalsList"></div>
+
+    <p class="section-label">Other Goals:</p>
+    <div id="otherGoalsList"></div>
+
+    <button class="btn-add-goal" onclick="openAddModal()">Add New Goal</button>
+
+  </div>
+
+  <!-- Add Goal Modal -->
+  <div class="modal-overlay" id="addModal">
+    <div class="modal">
+      <p class="modal-title">New Goal Name</p>
+      <p class="modal-hint">Reminder: Measurable goals are the easiest way to encourage and recognize progress!!!</p>
+
+      <div class="form-field">
+        <input type="text" id="goalName" placeholder="Goal name (e.g. Run 5K)" />
+      </div>
+
+      <div class="form-field">
+        <select id="goalLabel">
+          <option value="">⛰️ Set Goal Label</option>
+          <option value="Physical">Physical</option>
+          <option value="Social">Social</option>
+          <option value="Mental">Mental</option>
+          <option value="Journaling">Journaling</option>
+          <option value="Home">Home</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <input type="text" id="goalDetails" placeholder="Goal Details (e.g. steps, oz, workouts)" />
+      </div>
+
+      <!-- Target amount + unit -->
+      <div class="target-row">
+        <input type="number" id="goalTarget" placeholder="Target amount (e.g. 10000)" min="1" />
+        <select id="goalUnit">
+          <option value="">Unit</option>
+          <option value="Steps">Steps</option>
+          <option value="oz Water">oz Water</option>
+          <option value="Workouts">Workouts</option>
+          <option value="Minutes">Minutes</option>
+          <option value="Miles">Miles</option>
+          <option value="Hours">Hours</option>
+          <option value="Reps">Reps</option>
+          <option value="Lbs">Lbs</option>
+        </select>
+      </div>
+
+      <div class="checkbox-row">
+        <label>
+          <input type="checkbox" id="isDailyGoal" />
+          Daily Goal
+        </label>
+        <label>
+          <input type="checkbox" id="hasAchievementDate" onchange="toggleCalendar()" />
+          Set Achievement Date
+        </label>
+      </div>
+
+      <!-- Calendar -->
+      <div class="calendar-wrap" id="calendarWrap">
+        <div class="cal-header">
+          <button class="cal-nav" onclick="changeMonth(-1)">&#9664;</button>
+          <span id="calMonthYear"></span>
+          <button class="cal-nav" onclick="changeMonth(1)">&#9654;</button>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <span class="cal-today-btn" onclick="selectToday()">Select Today</span>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+        <button class="btn-commit" onclick="commitGoal()">Commit To Goal</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="journal.html" class="nav-item"><span>📓</span>JOURNAL</a>
+    <a href="goals.html" class="nav-item active"><span>⛰️</span>GOALS</a>
+    <a href="home.html" class="nav-item"><span>🏠</span>HOME</a>
+    <a href="workout.html" class="nav-item"><span>🏋️</span>WORKOUT</a>
+    <a href="meditation.html" class="nav-item"><span>🧘</span>MEDITATION</a>
+  </nav>
+
+  <script>
+    // ── Storage helpers ───────────────────────────────────────
+    function getGoals() {
+      return JSON.parse(localStorage.getItem('goalsData') || '[]');
+    }
+    function saveGoals(goals) {
+      localStorage.setItem('goalsData', JSON.stringify(goals));
+      // Also sync to userGoals for home page
+      localStorage.setItem('userGoals', JSON.stringify(goals.map(g => ({
+        icon: g.label === 'Physical' ? '🏃' : g.label === 'Mental' ? '🧠' : g.label === 'Journaling' ? '📓' : '🎯',
+        title: g.name,
+        sub: g.details || '',
+        done: g.current >= g.target
+      }))));
+    }
+
+    // ── Seed sample goals ─────────────────────────────────────
+    function seedIfEmpty() {
+      if (getGoals().length === 0) {
+        const samples = [
+          { id: 1, name: 'Steps',    unit: 'Steps',    details: 'Daily step goal', daily: true,  label: 'Physical', target: 10000, current: 8000, achievementDate: '' },
+          { id: 2, name: 'Water',    unit: 'oz Water', details: 'Hydration goal',  daily: true,  label: 'Physical', target: 40,    current: 30,   achievementDate: '' },
+          { id: 3, name: 'Workouts', unit: 'Workouts', details: 'Weekly workouts', daily: false, label: 'Physical', target: 5,     current: 1,    achievementDate: '' },
+        ];
+        saveGoals(samples);
+      }
+    }
+
+    // ── Render goals ──────────────────────────────────────────
+    function renderGoals() {
+      const goals = getGoals();
+      const daily = goals.filter(g => g.daily);
+      const other = goals.filter(g => !g.daily);
+      document.getElementById('dailyGoalsList').innerHTML = daily.map(goalHTML).join('') || '<p style="color:#aaa;font-size:0.85rem;font-style:italic;padding:0.5rem 0">No daily goals yet.</p>';
+      document.getElementById('otherGoalsList').innerHTML = other.map(goalHTML).join('') || '<p style="color:#aaa;font-size:0.85rem;font-style:italic;padding:0.5rem 0">No other goals yet.</p>';
+    }
+
+    function formatDisplayDate(iso) {
+      if (!iso) return '';
+      const parts = iso.split('-');
+      return parts[1] + '/' + parts[2] + '/' + parts[0].slice(2);
+    }
+
+    function goalHTML(g) {
+      const pct = Math.min((g.current / g.target) * 100, 100);
+      const isStretch = g.current > g.target;
+      const stretchBadge = isStretch ? '<span class="stretch-badge">🔥 Stretch!</span>' : '';
+      const labelBadge = g.label ? `<span class="goal-label-badge">${g.label}</span>` : '';
+
+      const displayText = `${g.current}/${g.target} ${g.unit}${isStretch ? ' → ' + g.current : ''}`;
+
+      const formattedDate = formatDisplayDate(g.achievementDate);
+      const dateBadge = formattedDate ? '<span class="goal-achievement-date">Goal achievement date: ' + formattedDate + '</span>' : '';
+      const labelLeft = g.label ? '<span style="font-size:0.7rem;color:#888">' + g.label + '</span>' : '<span></span>';
+
+      return '<div class="goal-row" id="goal-row-' + g.id + '">' +
+        '<div class="goal-main">' +
+          '<div class="goal-top-row">' +
+            labelLeft +
+            dateBadge +
+          '</div>' +
+          '<div class="goal-bottom-row">' +
+            '<div class="goal-text">' + displayText + stretchBadge + '</div>' +
+            '<button class="btn-log" onclick="toggleLogRow(' + g.id + ')">Log</button>' +
+          '</div>' +
+          '<div class="goal-progress-bar-wrap" style="margin-top:6px">' +
+            '<div class="goal-progress-bar ' + (isStretch ? 'stretch' : '') + '" style="width:' + pct + '%"></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="log-input-row" id="log-row-' + g.id + '">' +
+          '<input type="number" id="log-input-' + g.id + '" placeholder="Amount" min="0" />' +
+          '<button class="btn-log-add" onclick="logProgress(' + g.id + ')">+</button>' +
+          '<span class="log-label">Log ' + g.unit + '</span>' +
+        '</div>' +
+      '</div>';
+    }
+
+    function toggleLogRow(id) {
+      const row = document.getElementById('log-row-' + id);
+      row.classList.toggle('open');
+      if (row.classList.contains('open')) {
+        document.getElementById('log-input-' + id).focus();
+      }
+    }
+
+    function logProgress(id) {
+      const input = document.getElementById('log-input-' + id);
+      const val = parseFloat(input.value);
+      if (isNaN(val) || val <= 0) { showToast('Enter a valid amount'); return; }
+
+      const goals = getGoals();
+      const g = goals.find(x => x.id === id);
+      if (!g) return;
+      g.current += val;
+      saveGoals(goals);
+      showToast(`Logged ${val} ${g.unit}!`);
+      renderGoals();
+    }
+
+    // ── Add Goal Modal ────────────────────────────────────────
+    function openAddModal() {
+      document.getElementById('goalName').value = '';
+      document.getElementById('goalLabel').value = '';
+      document.getElementById('goalDetails').value = '';
+      document.getElementById('goalTarget').value = '';
+      document.getElementById('goalUnit').value = '';
+      document.getElementById('isDailyGoal').checked = false;
+      document.getElementById('hasAchievementDate').checked = false;
+      document.getElementById('calendarWrap').classList.remove('open');
+      selectedDate = '';
+      renderCalendar();
+      document.getElementById('addModal').classList.add('open');
+    }
+
+    function closeAddModal() {
+      document.getElementById('addModal').classList.remove('open');
+    }
+
+    function commitGoal() {
+      const name    = document.getElementById('goalName').value.trim();
+      const label   = document.getElementById('goalLabel').value;
+      const details = document.getElementById('goalDetails').value.trim();
+      const target  = parseFloat(document.getElementById('goalTarget').value);
+      const unit    = document.getElementById('goalUnit').value;
+      const daily   = document.getElementById('isDailyGoal').checked;
+
+      if (!name)           { showToast('Please enter a goal name'); return; }
+      if (!target || target <= 0) { showToast('Please enter a target amount'); return; }
+      if (!unit)           { showToast('Please select a unit'); return; }
+
+      const goals = getGoals();
+      const newGoal = {
+        id: Date.now(),
+        name, label, details, target, unit, daily,
+        current: 0,
+        achievementDate: selectedDate
+      };
+      goals.push(newGoal);
+      saveGoals(goals);
+      closeAddModal();
+      renderGoals();
+      showToast('Goal created!');
+    }
+
+    // ── Calendar ──────────────────────────────────────────────
+    let calDate = new Date();
+    let selectedDate = '';
+
+    function toggleCalendar() {
+      const wrap = document.getElementById('calendarWrap');
+      if (document.getElementById('hasAchievementDate').checked) {
+        wrap.classList.add('open');
+        renderCalendar();
+      } else {
+        wrap.classList.remove('open');
+        selectedDate = '';
+      }
+    }
+
+    function renderCalendar() {
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('calMonthYear').textContent = `${months[calDate.getMonth()]} ${calDate.getFullYear()}`;
+
+      const today = new Date();
+      const firstDay = new Date(calDate.getFullYear(), calDate.getMonth(), 1).getDay();
+      const daysInMonth = new Date(calDate.getFullYear(), calDate.getMonth() + 1, 0).getDate();
+
+      let html = ['S','M','T','W','T','F','S'].map(d => `<div class="cal-day-name">${d}</div>`).join('');
+      for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${calDate.getFullYear()}-${String(calDate.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const isToday = d === today.getDate() && calDate.getMonth() === today.getMonth() && calDate.getFullYear() === today.getFullYear();
+        const isSelected = dateStr === selectedDate;
+        html += `<div class="cal-day ${isToday?'today':''} ${isSelected?'selected':''}" onclick="selectDate('${dateStr}')">${d}</div>`;
+      }
+      document.getElementById('calGrid').innerHTML = html;
+    }
+
+    function changeMonth(dir) {
+      calDate = new Date(calDate.getFullYear(), calDate.getMonth() + dir, 1);
+      renderCalendar();
+    }
+
+    function selectDate(dateStr) {
+      selectedDate = dateStr;
+      renderCalendar();
+    }
+
+    function selectToday() {
+      const t = new Date();
+      selectedDate = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+      calDate = new Date(t.getFullYear(), t.getMonth(), 1);
+      renderCalendar();
+    }
+
+    // ── Toast ─────────────────────────────────────────────────
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    // Close modal on overlay click
+    document.getElementById('addModal').addEventListener('click', function(e) {
+      if (e.target === this) closeAddModal();
+    });
+
+    // ── Init ──────────────────────────────────────────────────
+    seedIfEmpty();
+    renderGoals();
+    renderCalendar();
+  </script>
+
+</body>
+</html>
