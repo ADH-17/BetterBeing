@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Entry – BetterBeing</title>
+  <link rel="stylesheet" href="journal.css" />
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <div>
+        <h1 class="page-title">Journal</h1>
+        <p class="page-subtitle" id="todayDate"></p>
+      </div>
+      <div class="profile-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="7" r="4"/>
+          <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Daily Prompt Ideas -->
+    <div class="prompts-section">
+      <p class="prompts-title">Daily Prompt Ideas</p>
+      <div class="prompts-grid">
+        <div class="prompt-card" onclick="usePrompt(this)">What are three small things I'm grateful for?</div>
+        <div class="prompt-card" onclick="usePrompt(this)">What intention do I want to set for today/tomorrow?</div>
+        <div class="prompt-card" onclick="usePrompt(this)">Life isn't perfect, but what can I be thankful for?</div>
+        <div class="prompt-card" onclick="usePrompt(this)">What were my highlights and lowlights of the day?</div>
+        <div class="prompt-card" onclick="usePrompt(this)">What did I learn about myself today?</div>
+        <div class="prompt-card" onclick="usePrompt(this)">What am I proud of myself for?</div>
+      </div>
+    </div>
+
+    <!-- Entry Form -->
+    <div class="entry-form-card">
+      <div class="entry-form-top">
+        <div class="entry-date-block">
+          <p class="entry-day-name" id="dayName"></p>
+          <p class="entry-day-num" id="dayNum"></p>
+        </div>
+        <input type="text" class="entry-title-input" id="entryTitle" placeholder="Journal Entry Title" />
+      </div>
+
+      <textarea class="entry-body-input" id="entryBody" placeholder="Journal entry: what's on your mind..."></textarea>
+
+      <div class="form-actions">
+        <button class="btn-delete" onclick="deleteEntry()">Delete Entry</button>
+        <button class="btn-save" onclick="saveEntry()">Save Entry</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="journal.html" class="nav-item active">
+      <span>📓</span>
+      <p>JOURNAL</p>
+    </a>
+    <a href="goals.html" class="nav-item">
+      <span>⛰️</span>
+      GOALS
+    </a>
+    <a href="home.html" class="nav-item">
+      <span>🏠</span>
+      <p>HOME</p>
+    </a>
+    <a href="workout.html" class="nav-item">
+      <span>🏋️</span>
+      <p>WORKOUT</p>
+    </a>
+    <a href="meditation.html" class="nav-item">
+      <span>🧘</span>
+      <p>MEDITATION</p>
+    </a>
+  </nav>
+
+  <script>
+    const now = new Date();
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const nth = (d) => { if (d>3 && d<21) return 'th'; switch(d%10){case 1:return 'st';case 2:return 'nd';case 3:return 'rd';default:return 'th';} };
+
+    document.getElementById('todayDate').textContent =
+      `Today: ${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}${nth(now.getDate())}, ${now.getFullYear()}`;
+    document.getElementById('dayName').textContent = days[now.getDay()].toUpperCase();
+    document.getElementById('dayNum').textContent = now.getDate();
+
+    // Check if editing an existing entry
+    const editIndex = localStorage.getItem('editEntryIndex');
+    let isEditing = editIndex !== null;
+
+    if (isEditing) {
+      const entries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
+      const entry = entries[editIndex];
+      if (entry) {
+        document.getElementById('entryTitle').value = entry.title;
+        document.getElementById('entryBody').value = entry.body;
+      }
+    }
+
+    // Pre-fill from prompt if coming from prompt click
+    const prompt = localStorage.getItem('journalPrompt');
+    if (prompt && !isEditing) {
+      document.getElementById('entryBody').value = prompt + '\n\n';
+      document.getElementById('entryBody').focus();
+      localStorage.removeItem('journalPrompt');
+    }
+
+    function usePrompt(el) {
+      document.getElementById('entryBody').value = el.textContent + '\n\n';
+      document.getElementById('entryBody').focus();
+    }
+
+    function saveEntry() {
+      const title = document.getElementById('entryTitle').value.trim();
+      const body = document.getElementById('entryBody').value.trim();
+      if (!body) { alert('Please write something before saving.'); return; }
+
+      const entries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
+      const entry = { date: now.toISOString(), title: title || 'Untitled Entry', body };
+
+      if (isEditing) {
+        entries[editIndex] = entry;
+        localStorage.removeItem('editEntryIndex');
+      } else {
+        entries.push(entry);
+      }
+
+      localStorage.setItem('journalEntries', JSON.stringify(entries));
+      window.location.href = 'journal.html';
+    }
+
+    function deleteEntry() {
+      if (isEditing) {
+        if (!confirm('Delete this entry?')) return;
+        const entries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
+        entries.splice(editIndex, 1);
+        localStorage.setItem('journalEntries', JSON.stringify(entries));
+        localStorage.removeItem('editEntryIndex');
+      }
+      window.location.href = 'journal.html';
+    }
+  </script>
+
+</body>
+</html>

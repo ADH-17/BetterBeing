@@ -6,16 +6,20 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #ffffff;
-  color: #1a1a1a;
+  font-family: Arial, sans-serif;
+  background: #e8e8e8;
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(188, 220, 200, 0.55) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 30%, rgba(200, 190, 230, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(180, 210, 225, 0.4) 0%, transparent 55%),
+    radial-gradient(ellipse at 10% 70%, rgba(220, 200, 185, 0.35) 0%, transparent 45%);
+  color: #2d2d2d;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  max-width: 430px;
+  max-width: 400px;
   margin: 0 auto;
   position: relative;
-  padding-bottom: 75px;
 }
 
 a {
@@ -26,7 +30,9 @@ a {
 /* ─── Container ────────────────────────────────────────────────── */
 .container {
   flex: 1;
-  padding: 24px 20px 16px;
+  background: rgba(255,255,255,0.15);
+  padding: 1.25rem;
+  padding-bottom: 90px;
   overflow-y: auto;
 }
 
@@ -35,13 +41,15 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .page-title {
-  font-size: 2rem;
+  font-size: 2.1rem;
   font-weight: 700;
   line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: #2a2a3d;
 }
 
 .back-btn {
@@ -50,16 +58,24 @@ a {
   justify-content: center;
   width: 36px;
   height: 36px;
-  border: 2px solid #1a1a1a;
-  border-radius: 6px;
+  border: 1.5px solid #b0aac0;
+  border-radius: 10px;
   cursor: pointer;
   margin-right: 12px;
   flex-shrink: 0;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(6px);
+  transition: background 0.2s;
+}
+
+.back-btn:hover {
+  background: rgba(255,255,255,0.9);
 }
 
 .back-btn svg {
   width: 18px;
   height: 18px;
+  color: #5a5470;
 }
 
 .header-left {
@@ -69,14 +85,22 @@ a {
 }
 
 .profile-icon {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   flex-shrink: 0;
+  background: rgba(255,255,255,0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  border: 1.5px solid #d0cce0;
 }
 
 .profile-icon svg {
-  width: 100%;
-  height: 100%;
+  width: 24px;
+  height: 24px;
+  color: #6b6490;
 }
 
 /* ─── Session Cards (main page) ────────────────────────────────── */
@@ -87,12 +111,22 @@ a {
 }
 
 .session-card {
-  background: #fdf0f2;
-  border-radius: 14px;
-  padding: 18px 16px 16px;
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 18px;
+  padding: 20px 18px 18px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  border: 1px solid rgba(255,255,255,0.85);
+  box-shadow: 0 4px 20px rgba(100, 90, 140, 0.07);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.session-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(100, 90, 140, 0.12);
 }
 
 .session-info {
@@ -108,9 +142,11 @@ a {
 .session-title {
   font-size: 1.05rem;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.35;
+  color: #3a3560;
   text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration-color: #b8aee0;
+  text-underline-offset: 4px;
 }
 
 .session-right {
@@ -118,52 +154,61 @@ a {
 }
 
 .session-desc {
-  font-size: 0.82rem;
-  line-height: 1.45;
-  color: #333;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #4e4c62;
   margin-bottom: 8px;
 }
 
 .session-duration {
   font-size: 0.82rem;
-  color: #555;
+  color: #8a86a0;
+  font-style: italic;
 }
 
 .btn-start {
   display: inline-block;
-  background: #7ec88a;
-  color: #1a1a1a;
-  font-size: 0.9rem;
-  font-weight: 500;
-  padding: 8px 28px;
+  background: linear-gradient(135deg, #74c98a, #52b870);
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 9px 30px;
   border-radius: 20px;
   border: none;
   cursor: pointer;
   align-self: flex-start;
-  transition: background 0.15s;
+  letter-spacing: 0.03em;
+  box-shadow: 0 3px 10px rgba(82, 184, 112, 0.35);
+  transition: opacity 0.2s, transform 0.1s;
 }
 
 .btn-start:hover {
-  background: #6ab876;
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
 /* ─── Subpage – Player Card ────────────────────────────────────── */
 .player-card {
-  background: #fdf0f2;
-  border-radius: 14px;
-  padding: 16px;
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 20px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
+  border: 1px solid rgba(255,255,255,0.85);
+  box-shadow: 0 6px 28px rgba(100, 90, 140, 0.09);
 }
 
 .player-image {
   width: 100%;
   aspect-ratio: 4/3;
-  border-radius: 8px;
+  border-radius: 14px;
   object-fit: cover;
   overflow: hidden;
   background: #ccc;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
 
 .player-image .img-placeholder {
@@ -172,26 +217,26 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
+  font-size: 3.5rem;
 }
 
 /* Progress bar */
 .progress-bar-wrap {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .progress-bar {
   width: 100%;
-  height: 10px;
-  background: #ccc;
-  border-radius: 5px;
+  height: 6px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 3px;
   overflow: hidden;
   position: relative;
 }
 
-/* Transparent overlay — sits on top of everything, receives all clicks */
+/* Transparent overlay */
 .progress-bar-overlay {
   position: absolute;
   top: 0;
@@ -207,20 +252,21 @@ a {
   top: 0;
   left: 0;
   height: 100%;
-  border-radius: 5px;
+  border-radius: 3px;
   width: 0%;
   z-index: 1;
 }
 
-.progress-fill.green { background: #2d9e3a; }
-.progress-fill.red   { background: #d94040; }
-.progress-fill.blue  { background: #3a75d4; }
+.progress-fill.green { background: linear-gradient(90deg, #6abf7a, #4aaf6a); }
+.progress-fill.red   { background: linear-gradient(90deg, #e88080, #d46060); }
+.progress-fill.blue  { background: linear-gradient(90deg, #7aaae8, #5a8ad4); }
 
 .progress-times {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8rem;
-  color: #444;
+  font-size: 0.75rem;
+  color: #8a86a0;
+  letter-spacing: 0.02em;
 }
 
 /* Controls */
@@ -231,46 +277,56 @@ a {
 }
 
 .volume-icon svg {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
+  color: #7a7590;
 }
 
 .volume-slider {
   -webkit-appearance: none;
   appearance: none;
   width: 90px;
-  height: 4px;
+  height: 3px;
   border-radius: 2px;
-  background: #bbb;
+  background: rgba(0,0,0,0.12);
   outline: none;
 }
 
 .volume-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
-  background: #444;
+  background: #8b80c8;
   cursor: pointer;
+  box-shadow: 0 1px 4px rgba(139,128,200,0.4);
 }
 
 .pause-btn {
   width: 38px;
   height: 38px;
-  border: 2px solid #555;
-  border-radius: 6px;
+  border: 1.5px solid #c0bada;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background: white;
+  background: rgba(255,255,255,0.8);
   margin-left: auto;
+  box-shadow: 0 2px 8px rgba(139,128,200,0.2);
+  transition: background 0.2s, transform 0.1s;
+}
+
+.pause-btn:hover {
+  background: white;
+  transform: scale(1.05);
 }
 
 .pause-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
+  color: #6b6490;
 }
 
 /* Session description below player */
@@ -279,56 +335,46 @@ a {
 }
 
 .session-desc-block p {
-  font-size: 0.85rem;
-  color: #333;
-  line-height: 1.5;
-  margin-bottom: 8px;
+  font-size: 0.88rem;
+  color: #4e4c62;
+  line-height: 1.6;
+  margin-bottom: 6px;
 }
 
 .session-desc-block .duration-label {
-  font-size: 0.85rem;
-  color: #555;
+  font-size: 0.82rem;
+  color: #8a86a0;
+  font-style: italic;
 }
 
-/* ─── Bottom Navigation ────────────────────────────────────────── */
+/* ─── Bottom Navigation ─────────────────────────────────────────── */
 .bottom-nav {
   position: fixed;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
   width: 100%;
-  max-width: 430px;
+  max-width: 400px;
+  background: #fff;
   display: flex;
   justify-content: space-around;
-  align-items: center;
-  background: #ffffff;
-  border-top: 1.5px solid #e0e0e0;
-  padding: 8px 0 10px;
-  z-index: 100;
+  padding: 0.6rem 0;
+  border-top: 1px solid #ddd;
 }
 
 .nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  font-size: 0.65rem;
+  color: #888;
   cursor: pointer;
-  text-decoration: none;
-  flex: 1;
 }
 
 .nav-item span {
-  font-size: 1.4rem;
-  line-height: 1;
+  font-size: 1.3rem;
+  margin-bottom: 2px;
 }
 
-.nav-item p {
-  font-size: 0.55rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  color: #888;
-}
-
-.nav-item.active p {
-  color: #1a1a1a;
+.nav-item.active {
+  color: #2d4f6e;
+  font-weight: bold;
 }

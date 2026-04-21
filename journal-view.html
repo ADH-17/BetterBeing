@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Journal Entry – BetterBeing</title>
+  <link rel="stylesheet" href="journal.css" />
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <div>
+        <h1 class="page-title">Journal</h1>
+        <p class="page-subtitle" id="todayDate"></p>
+      </div>
+      <div class="profile-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="7" r="4"/>
+          <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Daily Prompt Ideas -->
+    <div class="prompts-section">
+      <p class="prompts-title">Daily Prompt Ideas</p>
+      <div class="prompts-grid">
+        <div class="prompt-card" onclick="usePrompt(this)">What are three small things I'm grateful for?</div>
+        <div class="prompt-card" onclick="usePrompt(this)">What intention do I want to set for today/tomorrow?</div>
+        <div class="prompt-card" onclick="usePrompt(this)">Life isn't perfect, but what can I be thankful for?</div>
+        <div class="prompt-card" onclick="usePrompt(this)">What were my highlights and lowlights of the day?</div>
+        <div class="prompt-card" onclick="usePrompt(this)">What did I learn about myself today?</div>
+        <div class="prompt-card" onclick="usePrompt(this)">What am I proud of myself for?</div>
+      </div>
+    </div>
+
+    <!-- Actions Row -->
+    <div class="actions-row">
+      <button class="btn-new-entry" onclick="window.location.href='journal-entry.html'">+ New Entry</button>
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" placeholder="search entries..." />
+      </div>
+    </div>
+
+    <!-- View Card -->
+    <div class="view-card">
+      <div class="view-back-btn" onclick="window.location.href='journal.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </div>
+      <p class="view-date" id="viewDate"></p>
+      <p class="view-title" id="viewTitle"></p>
+      <p class="view-body" id="viewBody"></p>
+      <button class="view-edit-btn" onclick="editEntry()">Edit Entry</button>
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="journal.html" class="nav-item active">
+      <span>📓</span>
+      <p>JOURNAL</p>
+    </a>
+    <a href="goals.html" class="nav-item">
+      <span>⛰️</span>
+      GOALS
+    </a>
+    <a href="home.html" class="nav-item">
+      <span>🏠</span>
+      <p>HOME</p>
+    </a>
+    <a href="workout.html" class="nav-item">
+      <span>🏋️</span>
+      <p>WORKOUT</p>
+    </a>
+    <a href="meditation.html" class="nav-item">
+      <span>🧘</span>
+      <p>MEDITATION</p>
+    </a>
+  </nav>
+
+  <script>
+    const now = new Date();
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const nth = (d) => { if (d>3 && d<21) return 'th'; switch(d%10){case 1:return 'st';case 2:return 'nd';case 3:return 'rd';default:return 'th';} };
+
+    document.getElementById('todayDate').textContent =
+      `Today: ${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}${nth(now.getDate())}, ${now.getFullYear()}`;
+
+    const index = localStorage.getItem('viewEntryIndex');
+    const entries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
+    const entry = entries[index];
+
+    if (entry) {
+      const d = new Date(entry.date);
+      document.getElementById('viewDate').textContent = `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}`;
+      document.getElementById('viewTitle').textContent = entry.title;
+      document.getElementById('viewBody').textContent = entry.body;
+    }
+
+    function editEntry() {
+      localStorage.setItem('editEntryIndex', index);
+      window.location.href = 'journal-entry.html';
+    }
+
+    function usePrompt(el) {
+      localStorage.setItem('journalPrompt', el.textContent);
+      window.location.href = 'journal-entry.html';
+    }
+  </script>
+
+</body>
+</html>
