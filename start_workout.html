@@ -126,52 +126,45 @@
       letter-spacing: 0.5px;
     }
  
-    /* Set row */
-    .set-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .set-number {
-      font-size: 15px;
-      font-weight: 700;
-      color: #fff;
-      width: 22px;
-      flex-shrink: 0;
-    }
-    .set-input {
-      flex: 1;
-      background: rgba(255,255,255,0.92);
-      border: none;
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text);
-      text-align: center;
-      outline: none;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .set-input:focus {
-      background: #fff;
-      box-shadow: 0 0 0 2px var(--teal-dark);
-    }
+.set-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+
+  /* CRITICAL FIX */
+  width: 100%;
+  overflow: hidden;
+}
+
+.set-number {
+  color: white;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+/* CRITICAL FIX */
+.set-input {
+  flex: 1;
+  min-width: 0;              /* allows shrinking inside flex */
+  width: 0;                 /* forces proper flex behavior */
+  border-radius: 6px;
+  border: none;
+  padding: 6px;
+  text-align: center;
+  font-size: 12px;
+}
+
+/* delete button must NOT shrink inputs */
+.delete-btn {
+  width: 30px;
+  flex-shrink: 0;
+  background: var(--red);
+  border: none;
+  border-radius: 6px;
+}
     .set-input::placeholder { color: #888; }
  
-    .delete-btn {
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      background: var(--red);
-      border: none;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      transition: background 0.15s, transform 0.1s;
-    }
     .delete-btn:active { transform: scale(0.92); background: #b83030; }
     .delete-btn svg { width: 16px; height: 16px; fill: white; }
  
