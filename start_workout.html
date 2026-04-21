@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Active Workout</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    :root {
+      --bg: #f5f3ef;
+      --teal: #5a9fa8;
+      --teal-dark: #4a8a93;
+      --teal-light: #d6edef;
+      --teal-card: #6aadb6;
+      --purple: #4a3f9f;
+      --purple-dark: #3a2f8f;
+      --red: #d94040;
+      --text: #1a1a1a;
+      --text-muted: #6b6b6b;
+      --card-bg: #ffffff;
+      --border: #ddd;
+      --nav-bg: #ffffff;
+    }
+ 
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+ 
+    .phone {
+      width: 375px;
+      height: 780px;
+      background: var(--bg);
+      border-radius: 40px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.18);
+      position: relative;
+    }
+ 
+    /* Status bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+    .status-bar .icons { display: flex; gap: 6px; align-items: center; }
+ 
+    /* Profile icon */
+    .profile-icon {
+      position: absolute;
+      top: 40px;
+      right: 20px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--text);
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-size: 18px;
+      z-index: 10;
+    }
+ 
+    /* Scrollable content */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 20px 16px;
+    }
+    .content::-webkit-scrollbar { display: none; }
+ 
+    /* Back button */
+    .back-btn {
+      font-size: 22px;
+      color: var(--text);
+      cursor: pointer;
+      display: inline-block;
+      margin-bottom: 6px;
+      line-height: 1;
+      padding: 4px 0;
+    }
+ 
+    /* Timer heading */
+    .timer-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      letter-spacing: 1px;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .timer-heading span {
+      color: var(--teal-dark);
+    }
+ 
+    /* Exercise card */
+    .exercise-card {
+      background: var(--teal);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      animation: slideUp 0.4s ease both;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+ 
+    .exercise-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+ 
+    /* Set row */
+    .set-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .set-number {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      width: 22px;
+      flex-shrink: 0;
+    }
+    .set-input {
+      flex: 1;
+      background: rgba(255,255,255,0.92);
+      border: none;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      text-align: center;
+      outline: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .set-input:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px var(--teal-dark);
+    }
+    .set-input::placeholder { color: #888; }
+ 
+    .delete-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--red);
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .delete-btn:active { transform: scale(0.92); background: #b83030; }
+    .delete-btn svg { width: 16px; height: 16px; fill: white; }
+ 
+    /* Add Rep button */
+    .add-rep-btn {
+      width: 100%;
+      padding: 10px;
+      background: var(--purple);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+      letter-spacing: 0.3px;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .add-rep-btn:hover { background: var(--purple-dark); }
+    .add-rep-btn:active { transform: scale(0.98); }
+ 
+    /* Add Workout button */
+    .add-workout-btn {
+      width: 100%;
+      padding: 13px;
+      background: transparent;
+      border: 2.5px solid var(--purple);
+      border-radius: 12px;
+      color: var(--purple);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: background 0.15s, color 0.15s, transform 0.1s;
+      margin-bottom: 8px;
+    }
+    .add-workout-btn:hover { background: var(--purple); color: #fff; }
+    .add-workout-btn:active { transform: scale(0.98); }
+ 
+    /* Finish workout sticky footer area */
+    .finish-area {
+      padding: 10px 20px 12px;
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+    .finish-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--purple);
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: background 0.15s, transform 0.1s;
+      box-shadow: 0 4px 16px rgba(74,63,159,0.35);
+    }
+    .finish-btn:hover { background: var(--purple-dark); }
+    .finish-btn:active { transform: scale(0.98); }
+ 
+    /* Bottom Nav */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0 14px;
+      background: var(--nav-bg);
+      border-top: 1px solid #e8e8e8;
+      flex-shrink: 0;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .nav-item.active { opacity: 1; }
+    .nav-item svg { width: 24px; height: 24px; }
+    .nav-item span {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+ 
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>09:52 AM</span>
+      <div class="icons">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#1a1a1a"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#1a1a1a"/><rect x="9" y="0" width="3" height="12" rx="1" fill="#1a1a1a"/><rect x="13.5" y="0" width="2.5" height="12" rx="1" fill="#1a1a1a" opacity="0.3"/></svg>
+        <svg width="16" height="12" viewBox="0 0 20 14" fill="none"><path d="M10 3C12.8 3 15.3 4.2 17 6.1L18.5 4.4C16.4 2.1 13.4 0.5 10 0.5C6.6 0.5 3.6 2.1 1.5 4.4L3 6.1C4.7 4.2 7.2 3 10 3Z" fill="#1a1a1a"/><path d="M10 7C11.8 7 13.4 7.8 14.5 9L16 7.3C14.5 5.7 12.4 4.7 10 4.7C7.6 4.7 5.5 5.7 4 7.3L5.5 9C6.6 7.8 8.2 7 10 7Z" fill="#1a1a1a"/><circle cx="10" cy="12" r="1.5" fill="#1a1a1a"/></svg>
+        <svg width="22" height="12" viewBox="0 0 22 12" fill="none"><rect x="0.5" y="0.5" width="18" height="11" rx="3" stroke="#1a1a1a"/><rect x="2" y="2" width="13" height="8" rx="1.5" fill="#1a1a1a"/><path d="M20 4v4a2 2 0 000-4z" fill="#1a1a1a"/></svg>
+      </div>
+    </div>
+ 
+    <!-- Profile Icon -->
+    <div class="profile-icon">
+      <svg viewBox="0 0 24 24" fill="white" width="20" height="20"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+    </div>
+ 
+    <!-- Scrollable Content -->
+    <div class="content">
+      <div class="back-btn">&#8249;</div>
+ 
+      <div class="timer-heading">Elapsed Time <span id="timer">0:00</span></div>
+ 
+      <!-- Exercise Card -->
+      <div class="exercise-card" id="exercise-list">
+        <div class="exercise-name">Squats</div>
+        <div id="sets-container">
+          <div class="set-row">
+            <span class="set-number">1.</span>
+            <input class="set-input" type="text" placeholder="Weight" />
+            <input class="set-input" type="text" placeholder="Reps" />
+            <button class="delete-btn" onclick="deleteSet(this)">
+              <svg viewBox="0 0 24 24"><path d="M9 3h6l1 1h4v2H4V4h4l1-1zm-2 5h10l-1 13H8L7 8zm4 2v9m2-9v9" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="set-row">
+            <span class="set-number">2.</span>
+            <input class="set-input" type="text" placeholder="Weight" />
+            <input class="set-input" type="text" placeholder="Reps" />
+            <button class="delete-btn" onclick="deleteSet(this)">
+              <svg viewBox="0 0 24 24"><path d="M9 3h6l1 1h4v2H4V4h4l1-1zm-2 5h10l-1 13H8L7 8zm4 2v9m2-9v9" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+        <button class="add-rep-btn" onclick="addSet(this)">+ Add Rep</button>
+      </div>
+ 
+      <button class="add-workout-btn" onclick="addExercise()">Add Workout</button>
+    </div>
+ 
+    <!-- Finish Button -->
+    <div class="finish-area">
+      <button class="finish-btn">Finish Workout</button>
+    </div>
+ 
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8"><circle cx="12" cy="8" r="5"/><path d="M3 21c0-5 4-8 9-8s9 3 9 8" stroke-linecap="round"/><path d="M12 3c-1 2-1 4 0 6" stroke-linecap="round"/></svg>
+        <span>Journal</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8"><path d="M12 3L4 20h16L12 3z" stroke-linejoin="round"/><path d="M12 10v5M12 17v1" stroke-linecap="round"/></svg>
+        <span>Goals</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8"><path d="M3 12L12 4l9 8v8a1 1 0 01-1 1H5a1 1 0 01-1-1v-8z" stroke-linejoin="round"/><path d="M9 21V12h6v9" stroke-linejoin="round"/></svg>
+        <span>Home</span>
+      </div>
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8"><path d="M6 4v16M18 4v16M6 12h12" stroke-linecap="round"/><circle cx="4" cy="4" r="1.5" fill="#1a1a1a"/><circle cx="4" cy="20" r="1.5" fill="#1a1a1a"/><circle cx="20" cy="4" r="1.5" fill="#1a1a1a"/><circle cx="20" cy="20" r="1.5" fill="#1a1a1a"/></svg>
+        <span>Workout</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8"><path d="M12 3c-3 4-5 7-5 10a5 5 0 0010 0c0-3-2-6-5-10z" stroke-linejoin="round"/><path d="M12 13l-2 3M12 13l2 3" stroke-linecap="round"/></svg>
+        <span>Meditation</span>
+      </div>
+    </div>
+ 
+  </div>
+ 
+  <script>
+    // Timer
+    let seconds = 0;
+    setInterval(() => {
+      seconds++;
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      document.getElementById('timer').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    }, 1000);
+ 
+    // Renumber sets
+    function renumberSets(container) {
+      container.querySelectorAll('.set-row').forEach((row, i) => {
+        row.querySelector('.set-number').textContent = `${i + 1}.`;
+      });
+    }
+ 
+    // Add a set
+    function addSet(btn) {
+      const card = btn.closest('.exercise-card');
+      const container = card.querySelector('#sets-container') || card.querySelector('.sets-container');
+      const count = container.querySelectorAll('.set-row').length + 1;
+      const row = document.createElement('div');
+      row.className = 'set-row';
+      row.style.animation = 'slideUp 0.25s ease both';
+      row.innerHTML = `
+        <span class="set-number">${count}.</span>
+        <input class="set-input" type="text" placeholder="Weight" />
+        <input class="set-input" type="text" placeholder="Reps" />
+        <button class="delete-btn" onclick="deleteSet(this)">
+          <svg viewBox="0 0 24 24"><path d="M9 3h6l1 1h4v2H4V4h4l1-1zm-2 5h10l-1 13H8L7 8zm4 2v9m2-9v9" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </button>`;
+      container.appendChild(row);
+    }
+ 
+    // Delete a set
+    function deleteSet(btn) {
+      const row = btn.closest('.set-row');
+      const container = row.parentElement;
+      if (container.querySelectorAll('.set-row').length <= 1) return;
+      row.remove();
+      renumberSets(container);
+    }
+ 
+    // Add a new exercise card
+    let exerciseCount = 1;
+    const exercises = ['Bench Press', 'Deadlift', 'Pull-Ups', 'Overhead Press', 'Leg Press', 'Lunges', 'Rows'];
+    function addExercise() {
+      const name = exercises[exerciseCount % exercises.length];
+      exerciseCount++;
+      const card = document.createElement('div');
+      card.className = 'exercise-card';
+      card.style.animation = 'slideUp 0.35s ease both';
+      const containerId = `sets-${Date.now()}`;
+      card.innerHTML = `
+        <div class="exercise-name">${name}</div>
+        <div class="${'sets-container'}" id="${containerId}">
+          <div class="set-row">
+            <span class="set-number">1.</span>
+            <input class="set-input" type="text" placeholder="Weight" />
+            <input class="set-input" type="text" placeholder="Reps" />
+            <button class="delete-btn" onclick="deleteSet(this)">
+              <svg viewBox="0 0 24 24"><path d="M9 3h6l1 1h4v2H4V4h4l1-1zm-2 5h10l-1 13H8L7 8zm4 2v9m2-9v9" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+        <button class="add-rep-btn" onclick="addSet(this)">+ Add Rep</button>`;
+      const addBtn = document.querySelector('.add-workout-btn');
+      addBtn.parentElement.insertBefore(card, addBtn);
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  </script>
+</body>
+</html>
+ 
