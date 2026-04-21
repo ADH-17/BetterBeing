@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Start Empty Workout</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f5f3ef;
+  --teal: #5a9fa8;
+  --purple: #4a3f9f;
+  --purple-dark: #3a2f8f;
+  --red: #d94040;
+  --text: #1a1a1a;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.phone {
+  width: 375px;
+  height: 780px;
+  background: var(--bg);
+  border-radius: 40px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.18);
+}
+
+/* CONTENT */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px;
+}
+
+/* BACK */
+.back-btn {
+  font-size: 24px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+/* TITLE */
+.title {
+  font-family: 'Bebas Neue';
+  font-size: 34px;
+  margin-bottom: 10px;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  color: #777;
+  margin: 20px 0;
+  font-size: 14px;
+}
+
+/* EXERCISE CARD */
+.exercise-card {
+  background: var(--teal);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.exercise-name {
+  color: white;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+/* SET ROW */
+.set-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.set-number {
+  color: white;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.set-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  border-radius: 6px;
+  padding: 6px;
+  text-align: center;
+}
+
+/* DELETE */
+.delete-btn {
+  width: 30px;
+  background: var(--red);
+  border: none;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* BUTTONS */
+.add-rep-btn,
+.add-exercise-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.add-rep-btn {
+  background: var(--purple);
+  color: white;
+  border: none;
+}
+
+.add-exercise-btn {
+  background: transparent;
+  border: 2px solid var(--purple);
+  color: var(--purple);
+}
+
+/* FINISH */
+.finish-area {
+  padding: 10px 16px;
+}
+
+.finish-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--purple);
+  color: white;
+  border: none;
+  border-radius: 12px;
+}
+
+/* NAV */
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-top: 1px solid #ddd;
+  background: white;
+}
+
+.nav-item {
+  font-size: 10px;
+  text-align: center;
+  opacity: 0.6;
+}
+.nav-item.active { opacity: 1; }
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+
+  <div class="content">
+
+    <div class="back-btn" onclick="window.location.href='workout.html'">‹</div>
+
+    <div class="title">Start Workout</div>
+
+    <div class="empty-state" id="emptyState">
+      No exercises yet. Add your first exercise.
+    </div>
+
+    <div id="exerciseContainer"></div>
+
+    <button class="add-exercise-btn" onclick="addExercise()">
+      + Add Exercise
+    </button>
+
+  </div>
+
+  <div class="finish-area">
+    <button class="finish-btn">Finish Workout</button>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item">Journal</div>
+    <div class="nav-item">Goals</div>
+    <div class="nav-item">Home</div>
+    <div class="nav-item active">Workout</div>
+    <div class="nav-item">Meditation</div>
+  </div>
+
+</div>
+
+<script>
+let exerciseCount = 0;
+
+function addExercise() {
+  const container = document.getElementById("exerciseContainer");
+  const empty = document.getElementById("emptyState");
+
+  empty.style.display = "none";
+
+  exerciseCount++;
+
+  const card = document.createElement("div");
+  card.className = "exercise-card";
+
+  card.innerHTML = `
+    <div class="exercise-name">Exercise ${exerciseCount}</div>
+
+    <div class="set-row">
+      <span class="set-number">1</span>
+      <input class="set-input" placeholder="Weight">
+      <input class="set-input" placeholder="Reps">
+      <button class="delete-btn" onclick="deleteSet(this)"></button>
+    </div>
+
+    <button class="add-rep-btn" onclick="addSet(this)">+ Add Rep</button>
+  `;
+
+  container.appendChild(card);
+}
+
+function addSet(btn) {
+  const card = btn.closest(".exercise-card");
+  const rows = card.querySelectorAll(".set-row").length;
+
+  const row = document.createElement("div");
+  row.className = "set-row";
+
+  row.innerHTML = `
+    <span class="set-number">${rows + 1}</span>
+    <input class="set-input" placeholder="Weight">
+    <input class="set-input" placeholder="Reps">
+    <button class="delete-btn" onclick="deleteSet(this)"></button>
+  `;
+
+  card.insertBefore(row, btn);
+}
+
+function deleteSet(btn) {
+  const row = btn.closest(".set-row");
+  const container = row.parentElement;
+
+  if (container.querySelectorAll(".set-row").length <= 1) return;
+
+  row.remove();
+
+  container.querySelectorAll(".set-row").forEach((r, i) => {
+    r.querySelector(".set-number").textContent = i + 1;
+  });
+}
+</script>
+
+</body>
+</html>
