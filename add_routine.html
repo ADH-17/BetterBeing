@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Routine</title>
+  <link rel="stylesheet" href="add_routine.css">
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Header -->
+  <div class="header">
+    <span class="back">←</span>
+    <h1>Add Routine</h1>
+    <div class="profile"></div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+
+    <div class="panel" id="exerciseContainer">
+
+      <p class="exercise-title">Squats</p>
+
+      <div class="set-row">
+        <span>1.</span>
+        <input placeholder="Weight">
+        <input placeholder="Reps">
+        <button class="delete">🗑</button>
+      </div>
+
+      <div class="set-row">
+        <span>2.</span>
+        <input placeholder="Weight">
+        <input placeholder="Reps">
+        <button class="delete">🗑</button>
+      </div>
+
+      <button class="btn blue">Add Rep</button>
+      <button class="btn purple" onclick="addExercise()">Add Exercise</button>
+
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="nav">
+    <div>🧠<span>Journal</span></div>
+    <div>⚠️<span>Goals</span></div>
+    <div>🏠<span>Home</span></div>
+    <div class="active">🏋️<span>Workout</span></div>
+    <div>🙏<span>Meditation</span></div>
+  </div>
+
+</div>
+
+<script>
+let exerciseCount = 1;
+
+// Add new exercise
+function addExercise() {
+  const container = document.getElementById("exerciseContainer");
+  exerciseCount++;
+
+  const exerciseDiv = document.createElement("div");
+  exerciseDiv.classList.add("exercise");
+
+  exerciseDiv.innerHTML = `
+    <a href="example.html" class="exercise-title">Exercise ${exerciseCount}</a>
+
+    <div class="sets"></div>
+
+    <button class="btn blue add-rep-btn">Add Rep</button>
+  `;
+
+  const addExerciseBtn = container.querySelector(".purple");
+  container.insertBefore(exerciseDiv, addExerciseBtn);
+
+  // Add FIRST set automatically
+  addSet(exerciseDiv);
+
+  // Hook up button
+  const addRepBtn = exerciseDiv.querySelector(".add-rep-btn");
+  addRepBtn.addEventListener("click", () => addSet(exerciseDiv));
+}
+
+
+// Add set to a specific exercise
+function addSet(exerciseDiv) {
+  const setsContainer = exerciseDiv.querySelector(".sets");
+  const setCount = setsContainer.children.length + 1;
+
+  const setRow = document.createElement("div");
+  setRow.classList.add("set-row");
+
+  setRow.innerHTML = `
+    <span>${setCount}.</span>
+    <input placeholder="Weight">
+    <input placeholder="Reps">
+    <button class="delete">🗑</button>
+  `;
+
+  setsContainer.appendChild(setRow);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const firstExercise = document.querySelector(".panel");
+
+  // wrap existing rows into .sets container
+  const existingSets = document.createElement("div");
+  existingSets.classList.add("sets");
+
+  document.querySelectorAll(".set-row").forEach(row => {
+    existingSets.appendChild(row);
+  });
+
+  const addRepBtn = document.querySelector(".blue");
+  addRepBtn.before(existingSets);
+
+  addRepBtn.addEventListener("click", () => addSet(firstExercise));
+});
+
+
+// Fix FIRST exercise on page load
+document.addEventListener("DOMContentLoaded", () => {
+  const firstExercise = document.querySelector(".exercise");
+
+  // Create sets container
+  const setsContainer = document.createElement("div");
+  setsContainer.classList.add("sets");
+
+  // Move existing rows into it
+  const existingRows = firstExercise.querySelectorAll(".set-row");
+  existingRows.forEach(row => setsContainer.appendChild(row));
+
+  // Insert before button
+  const addRepBtn = firstExercise.querySelector(".blue");
+  firstExercise.insertBefore(setsContainer, addRepBtn);
+
+  // Ensure at least ONE set exists
+  if (setsContainer.children.length === 0) {
+    addSet(firstExercise);
+  }
+
+  // Hook button
+  addRepBtn.addEventListener("click", () => addSet(firstExercise));
+});
+</script>
+
+</body>
+</html>

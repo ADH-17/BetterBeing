@@ -13,8 +13,13 @@
   <div class="card">
     <textarea>Username</textarea>
     <textarea>Password</textarea>
-    <button class="btn">Sign In</button>
+    <button id="signInButton"class="btn">Sign In</button>
   </div>
-
+<script>
+    const signInBtn = document.getElementById("signInButton");
+    signInBtn.addEventListener("click", function() {
+        window.location.href = "home.html";
+    });
+</script>
 </body>
 </html>
