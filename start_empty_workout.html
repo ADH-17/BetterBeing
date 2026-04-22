@@ -37,6 +37,7 @@ body {
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 30px 80px rgba(0,0,0,0.18);
+  position: relative;
 }
 
 /* CONTENT */
@@ -79,6 +80,7 @@ body {
 .exercise-name {
   color: white;
   font-size: 13px;
+  font-weight: 600;
   margin-bottom: 10px;
 }
 
@@ -94,6 +96,7 @@ body {
   color: white;
   width: 18px;
   flex-shrink: 0;
+  line-height: 32px;
 }
 
 .set-input {
@@ -103,6 +106,7 @@ body {
   border-radius: 6px;
   padding: 6px;
   text-align: center;
+  font-family: 'DM Sans', sans-serif;
 }
 
 /* DELETE */
@@ -112,6 +116,9 @@ body {
   border: none;
   border-radius: 6px;
   flex-shrink: 0;
+  cursor: pointer;
+  font-size: 14px;
+  color: white;
 }
 
 /* BUTTONS */
@@ -122,6 +129,9 @@ body {
   padding: 10px;
   border-radius: 10px;
   cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .add-rep-btn {
@@ -134,6 +144,13 @@ body {
   background: transparent;
   border: 2px solid var(--purple);
   color: var(--purple);
+  margin-top: 4px;
+}
+
+.add-exercise-btn:hover {
+  background: var(--purple);
+  color: white;
+  transition: 0.2s;
 }
 
 /* FINISH */
@@ -148,6 +165,15 @@ body {
   color: white;
   border: none;
   border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.finish-btn:hover {
+  background: var(--purple-dark);
+  transition: 0.2s;
 }
 
 /* NAV */
@@ -165,6 +191,170 @@ body {
   opacity: 0.6;
 }
 .nav-item.active { opacity: 1; }
+
+/* ========================
+   EXERCISE PICKER MODAL
+   ======================== */
+.modal-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 100;
+  border-radius: 40px;
+  align-items: flex-end;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-sheet {
+  width: 100%;
+  background: white;
+  border-radius: 24px 24px 0 0;
+  padding: 16px;
+  max-height: 82%;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.28s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  background: #ddd;
+  border-radius: 99px;
+  margin: 0 auto 14px;
+}
+
+.modal-title {
+  font-family: 'Bebas Neue';
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+/* SEARCH */
+.search-bar {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  margin-bottom: 10px;
+  outline: none;
+}
+
+.search-bar:focus {
+  border-color: var(--purple);
+}
+
+/* CATEGORY TABS */
+.category-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  scrollbar-width: none;
+}
+.category-tabs::-webkit-scrollbar { display: none; }
+
+.cat-tab {
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1.5px solid #ddd;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  background: white;
+  color: #555;
+  transition: 0.15s;
+}
+
+.cat-tab.active, .cat-tab:hover {
+  background: var(--purple);
+  color: white;
+  border-color: var(--purple);
+}
+
+/* EXERCISE LIST */
+.exercise-list {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.exercise-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 4px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background 0.1s;
+  border-radius: 8px;
+}
+
+.exercise-option:hover {
+  background: #f5f3ef;
+}
+
+.ex-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.ex-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ex-muscle {
+  font-size: 11px;
+  color: #888;
+  margin-top: 1px;
+}
+
+.ex-add-icon {
+  width: 28px;
+  height: 28px;
+  background: var(--purple);
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #aaa;
+  background: none;
+  border: none;
+}
+
+.no-results {
+  text-align: center;
+  color: #aaa;
+  font-size: 13px;
+  margin-top: 24px;
+}
 </style>
 </head>
 
@@ -184,14 +374,14 @@ body {
 
     <div id="exerciseContainer"></div>
 
-    <button class="add-exercise-btn" onclick="addExercise()">
+    <button class="add-exercise-btn" onclick="openModal()">
       + Add Exercise
     </button>
 
   </div>
 
   <div class="finish-area">
-    <button class="finish-btn">Finish Workout</button>
+    <button class="finish-btn" onclick="window.location.href='finish_workout.html'">Finish Workout</button>
   </div>
 
   <div class="bottom-nav">
@@ -202,53 +392,232 @@ body {
     <div class="nav-item">Meditation</div>
   </div>
 
+  <!-- ===== EXERCISE PICKER MODAL ===== -->
+  <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">Choose Exercise</div>
+
+      <input
+        class="search-bar"
+        id="searchInput"
+        type="text"
+        placeholder="Search exercises..."
+        oninput="filterExercises()"
+      />
+
+      <div class="category-tabs" id="categoryTabs"></div>
+
+      <div class="exercise-list" id="exerciseList"></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
+// ========================
+//  EXERCISE DATABASE
+// ========================
+const EXERCISES = [
+  // Chest
+  { name: "Bench Press",           muscle: "Chest",      category: "Chest" },
+  { name: "Incline Dumbbell Press",muscle: "Upper Chest",category: "Chest" },
+  { name: "Decline Bench Press",   muscle: "Lower Chest",category: "Chest" },
+  { name: "Cable Fly",             muscle: "Chest",      category: "Chest" },
+  { name: "Chest Dips",            muscle: "Chest / Triceps", category: "Chest" },
+  { name: "Push-Up",               muscle: "Chest",      category: "Chest" },
+  { name: "Pec Deck",              muscle: "Chest",      category: "Chest" },
+
+  // Back
+  { name: "Deadlift",              muscle: "Back / Hamstrings", category: "Back" },
+  { name: "Pull-Up",               muscle: "Lats",       category: "Back" },
+  { name: "Lat Pulldown",          muscle: "Lats",       category: "Back" },
+  { name: "Seated Cable Row",      muscle: "Mid Back",   category: "Back" },
+  { name: "Bent-Over Row",         muscle: "Back",       category: "Back" },
+  { name: "T-Bar Row",             muscle: "Mid Back",   category: "Back" },
+  { name: "Single-Arm Dumbbell Row",muscle:"Back",       category: "Back" },
+
+  // Shoulders
+  { name: "Overhead Press",        muscle: "Shoulders",  category: "Shoulders" },
+  { name: "Dumbbell Lateral Raise",muscle: "Side Delts", category: "Shoulders" },
+  { name: "Front Raise",           muscle: "Front Delts",category: "Shoulders" },
+  { name: "Rear Delt Fly",         muscle: "Rear Delts", category: "Shoulders" },
+  { name: "Arnold Press",          muscle: "Shoulders",  category: "Shoulders" },
+  { name: "Face Pull",             muscle: "Rear Delts / Traps", category: "Shoulders" },
+
+  // Arms
+  { name: "Barbell Curl",          muscle: "Biceps",     category: "Arms" },
+  { name: "Hammer Curl",           muscle: "Biceps / Brachialis", category: "Arms" },
+  { name: "Preacher Curl",         muscle: "Biceps",     category: "Arms" },
+  { name: "Tricep Pushdown",       muscle: "Triceps",    category: "Arms" },
+  { name: "Skull Crusher",         muscle: "Triceps",    category: "Arms" },
+  { name: "Overhead Tricep Extension", muscle:"Triceps", category: "Arms" },
+  { name: "Concentration Curl",    muscle: "Biceps",     category: "Arms" },
+
+  // Legs
+  { name: "Squat",                 muscle: "Quads / Glutes", category: "Legs" },
+  { name: "Leg Press",             muscle: "Quads",      category: "Legs" },
+  { name: "Leg Extension",         muscle: "Quads",      category: "Legs" },
+  { name: "Leg Curl",              muscle: "Hamstrings", category: "Legs" },
+  { name: "Romanian Deadlift",     muscle: "Hamstrings / Glutes", category: "Legs" },
+  { name: "Hip Thrust",            muscle: "Glutes",     category: "Legs" },
+  { name: "Calf Raise",            muscle: "Calves",     category: "Legs" },
+  { name: "Kettlebell Swing",      muscle: "Glutes / Hamstrings", category: "Legs" },
+  { name: "Walking Lunge",         muscle: "Quads / Glutes", category: "Legs" },
+
+  // Core
+  { name: "Plank",                 muscle: "Core",       category: "Core" },
+  { name: "Russian Twist",         muscle: "Obliques",   category: "Core" },
+  { name: "Captain's Chair Leg Raise", muscle:"Lower Abs",category:"Core" },
+  { name: "Cable Crunch",          muscle: "Abs",        category: "Core" },
+  { name: "Hanging Knee Raise",    muscle: "Lower Abs",  category: "Core" },
+  { name: "Ab Wheel Rollout",      muscle: "Core",       category: "Core" },
+  { name: "Side Plank",            muscle: "Obliques",   category: "Core" },
+
+  // Cardio
+  { name: "Treadmill Run",         muscle: "Cardio",     category: "Cardio" },
+  { name: "Rowing Machine",        muscle: "Full Body",  category: "Cardio" },
+  { name: "Jump Rope",             muscle: "Cardio",     category: "Cardio" },
+  { name: "Stair Climber",         muscle: "Legs / Cardio", category: "Cardio" },
+  { name: "Battle Ropes",          muscle: "Arms / Cardio", category: "Cardio" },
+];
+
+const CATEGORIES = ["All", ...new Set(EXERCISES.map(e => e.category))];
+
+let activeCategory = "All";
+
+// ========================
+//  MODAL
+// ========================
+function openModal() {
+  document.getElementById("modalOverlay").classList.add("open");
+  document.getElementById("searchInput").value = "";
+  activeCategory = "All";
+  buildCategoryTabs();
+  renderExercises();
+  setTimeout(() => document.getElementById("searchInput").focus(), 300);
+}
+
+function closeModal() {
+  document.getElementById("modalOverlay").classList.remove("open");
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById("modalOverlay")) closeModal();
+}
+
+// ========================
+//  CATEGORY TABS
+// ========================
+function buildCategoryTabs() {
+  const tabs = document.getElementById("categoryTabs");
+  tabs.innerHTML = "";
+  CATEGORIES.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.className = "cat-tab" + (cat === activeCategory ? " active" : "");
+    btn.textContent = cat;
+    btn.onclick = () => {
+      activeCategory = cat;
+      buildCategoryTabs();
+      renderExercises();
+    };
+    tabs.appendChild(btn);
+  });
+}
+
+// ========================
+//  RENDER EXERCISE LIST
+// ========================
+function filterExercises() {
+  renderExercises();
+}
+
+function renderExercises() {
+  const query = document.getElementById("searchInput").value.toLowerCase().trim();
+  const list  = document.getElementById("exerciseList");
+
+  const filtered = EXERCISES.filter(ex => {
+    const matchCat  = activeCategory === "All" || ex.category === activeCategory;
+    const matchText = !query || ex.name.toLowerCase().includes(query) || ex.muscle.toLowerCase().includes(query);
+    return matchCat && matchText;
+  });
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="no-results">No exercises found</div>`;
+    return;
+  }
+
+  list.innerHTML = "";
+  filtered.forEach(ex => {
+    const item = document.createElement("div");
+    item.className = "exercise-option";
+    item.innerHTML = `
+      <div class="ex-info">
+        <span class="ex-name">${ex.name}</span>
+        <span class="ex-muscle">${ex.muscle}</span>
+      </div>
+      <div class="ex-add-icon">+</div>
+    `;
+    item.onclick = () => selectExercise(ex.name);
+    list.appendChild(item);
+  });
+}
+
+// ========================
+//  ADD EXERCISE CARD
+// ========================
 let exerciseCount = 0;
 
-function addExercise() {
-  const container = document.getElementById("exerciseContainer");
-  const empty = document.getElementById("emptyState");
+function selectExercise(name) {
+  closeModal();
 
-  empty.style.display = "none";
+  const container = document.getElementById("exerciseContainer");
+  document.getElementById("emptyState").style.display = "none";
 
   exerciseCount++;
 
   const card = document.createElement("div");
   card.className = "exercise-card";
+  card.style.animation = "slideUp 0.28s cubic-bezier(0.34,1.56,0.64,1) both";
 
   card.innerHTML = `
-    <div class="exercise-name">Exercise ${exerciseCount}</div>
+    <div class="exercise-name">${name}</div>
 
-    <div class="set-row">
-      <span class="set-number">1</span>
-      <input class="set-input" placeholder="Weight">
-      <input class="set-input" placeholder="Reps">
-      <button class="delete-btn" onclick="deleteSet(this)"></button>
+    <div class="sets-container">
+      <div class="set-row">
+        <span class="set-number">1</span>
+        <input class="set-input" placeholder="Weight" type="number" inputmode="decimal" />
+        <input class="set-input" placeholder="Reps"   type="number" inputmode="numeric" />
+        <button class="delete-btn" onclick="deleteSet(this)">🗑</button>
+      </div>
     </div>
 
-    <button class="add-rep-btn" onclick="addSet(this)">+ Add Rep</button>
+    <button class="add-rep-btn" onclick="addSet(this)">+ Add Set</button>
   `;
 
   container.appendChild(card);
 }
 
+// ========================
+//  SET HANDLING
+// ========================
 function addSet(btn) {
   const card = btn.closest(".exercise-card");
-  const rows = card.querySelectorAll(".set-row").length;
+  const setsContainer = card.querySelector(".sets-container");
+  const rows = setsContainer.querySelectorAll(".set-row").length;
 
   const row = document.createElement("div");
   row.className = "set-row";
+  row.style.animation = "slideUp 0.2s ease both";
 
   row.innerHTML = `
     <span class="set-number">${rows + 1}</span>
-    <input class="set-input" placeholder="Weight">
-    <input class="set-input" placeholder="Reps">
-    <button class="delete-btn" onclick="deleteSet(this)"></button>
+    <input class="set-input" placeholder="Weight" type="number" inputmode="decimal" />
+    <input class="set-input" placeholder="Reps"   type="number" inputmode="numeric" />
+    <button class="delete-btn" onclick="deleteSet(this)">🗑</button>
   `;
 
-  card.insertBefore(row, btn);
+  setsContainer.appendChild(row);
 }
 
 function deleteSet(btn) {
@@ -263,6 +632,10 @@ function deleteSet(btn) {
     r.querySelector(".set-number").textContent = i + 1;
   });
 }
+
+// Init modal on load
+buildCategoryTabs();
+renderExercises();
 </script>
 
 </body>
